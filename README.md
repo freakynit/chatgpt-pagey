@@ -11,7 +11,7 @@
 [![MCP](https://img.shields.io/badge/MCP-Streamable%20HTTP-141a10)](https://modelcontextprotocol.io)
 [![Node](https://img.shields.io/badge/Node.js-24%2B-141a10)](https://nodejs.org)
 
-[Live demo](https://chatgpt-demo.pagey.site) · [Pagey](https://pagey.site) · [API reference](https://pagey.site/api-docs) · [Deploy](docs/DEPLOY.md) · [Report an issue](https://github.com/freakynit/chatgpt-pagey/issues)
+[Hosted endpoint](https://mcp.pagey.site) · [Live demo](https://chatgpt-demo.pagey.site) · [Pagey](https://pagey.site) · [API reference](https://pagey.site/api-docs) · [Deploy](docs/DEPLOY.md) · [Report an issue](https://github.com/freakynit/chatgpt-pagey/issues)
 
 </div>
 
@@ -24,9 +24,10 @@ publishing tool. Ask for a page, and ChatGPT writes the HTML and publishes it to
 Pagey: automatic HTTPS, a `*.pagey.site` address, visitor analytics, password
 protection, custom subdomains, and hosted forms.
 
-**The first ChatGPT plugin built for Pagey — and a genuinely free alternative to
-“deploy from chat” tools that meter sites, expire previews, or ask for a card.**
-No subscription. No credit card. No cap on the number of sites you own.
+**The first ChatGPT plugin for Pagey — and, as far as we know, the first way to
+publish a static site from ChatGPT with genuinely free hosting: no subscription,
+no card, and no cap on the number of sites you own.** No expiring previews, no
+per-site metering, no “free tier” that deletes your page after a week.
 
 <div align="center">
 
