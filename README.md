@@ -168,6 +168,12 @@ sites are static: no Node.js, PHP, SSR, or custom API server. Use Pagey’s host
 forms for a form backend. See [pagey.site/llms.txt](https://pagey.site/llms.txt)
 for the current source of truth.
 
+This ChatGPT plugin publishes sites written in the conversation. It does not
+read an arbitrary local `dist/` folder. If you already have a build directory,
+use [herdr-pagey](https://github.com/freakynit/herdr-pagey) or
+[opencode-pagey](https://github.com/freakynit/opencode-pagey), which publish
+local build output through the same Pagey API.
+
 ## How it works
 
 ```mermaid

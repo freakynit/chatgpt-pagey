@@ -94,11 +94,19 @@ try {
   });
   ensureOk("create_form", form);
   formId = String((form.structuredContent as Record<string, unknown>)["form_id"]);
+  const submitUrl = String((form.structuredContent as Record<string, unknown>)["submit_url"]);
+  const submitted = await fetch(submitUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ email: "smoke@example.com" }),
+  });
+  if (!submitted.ok) throw new Error(`form submission failed with HTTP ${submitted.status}`);
   const forms = await client.callTool({ name: "list_forms", arguments: {} });
   ensureOk("list_forms", forms);
   const responses = await client.callTool({ name: "get_form_responses", arguments: { form_id: formId } });
   ensureOk("get_form_responses", responses);
-  console.log("✓ Form create/list/read tools work");
+  if (!/1 response/u.test(textOf(responses))) throw new Error("get_form_responses did not show the submitted response");
+  console.log("✓ Form create/submit/list/read tools work");
 
   console.log(`\nDeployment verified: ${baseUrl}/mcp`);
 } finally {
