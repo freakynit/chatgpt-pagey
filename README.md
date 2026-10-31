@@ -265,10 +265,10 @@ tunnel you trust; it sees the same OAuth and site traffic as your server.
 ```text
 src/
   auth/       OAuth provider, DCR clients, SQLite store, encrypted tokens
-  http/       Express app, OAuth pages, landing page, privacy page
+  http/       Express app, OAuth pages, landing/privacy/terms pages
   mcp/        MCP server, tool schemas, server instructions
   pagey/      Pagey API client, upload validation, deterministic ZIP builder
-scripts/      Live Pagey end-to-end check
+scripts/      Live, remote, and stdio smoke checks
 examples/     The published demo page
 test/         Unit and integration tests
 docs/         Deployment guide
