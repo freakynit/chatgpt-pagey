@@ -182,6 +182,15 @@ reconnect, but does not affect their sites.
 There is no automatic deletion of Pagey tokens. Revoke the dedicated Pagey token
 in the Pagey dashboard when a connection is no longer needed.
 
+## Kubernetes
+
+The manifests used for the public `mcp.pagey.site` deployment are in
+[`deploy/k8s.yaml`](../deploy/k8s.yaml). They assume an existing `apps`
+namespace, a `ghcr` image pull secret, and a `pagey-wildcard-tls` secret. Adjust
+the hostname, image tag, storage class, and TLS secret for your cluster. The
+container runs as UID 1000, uses a read-only root filesystem, and keeps SQLite
+on a 1 GiB PVC.
+
 ## Verify a deployment
 
 From a checkout, walk the real OAuth and MCP flow against the public endpoint:
