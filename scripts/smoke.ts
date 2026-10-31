@@ -49,6 +49,10 @@ try {
   console.log(text);
   console.log("✓ stdio MCP server and Pagey token are working");
 } finally {
-  await client.close().catch(() => undefined);
+  try {
+    await client.close();
+  } catch {
+    // The child process may already have exited.
+  }
   rmSync(dataDir, { recursive: true, force: true });
 }

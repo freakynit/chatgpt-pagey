@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-pagey",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Publish and manage free Pagey static sites from ChatGPT.",
   "type": "module",
   "license": "MIT",

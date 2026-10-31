@@ -191,7 +191,7 @@ ${hidden}
       <div class="divider"></div>
       <p class="hint">Your token is stored encrypted on this server and sent only to Pagey’s API. It grants full access to your Pagey account, so create a dedicated token and revoke it when you no longer need this connection.</p>
     </main>`,
-    `<footer class="footer">Independent community integration. Pagey sets the hosting terms and limits. <a href="https://pagey.site/terms" rel="noreferrer">Terms</a> · <a href="/privacy">Privacy</a></footer>`,
+    `<footer class="footer">Independent community integration. Pagey sets the hosting terms and limits. <a href="https://pagey.site/terms" rel="noreferrer">Pagey terms</a> · <a href="/terms">Connector terms</a> · <a href="/privacy">Privacy</a></footer>`,
   );
 }
 
@@ -270,7 +270,27 @@ How many people visited my site this week?</pre>
         <p class="lead">“Unlimited” means no cap on total sites, not unrestricted resources. Registered accounts can create <strong>25 new sites per UTC day</strong>; updating a site does not use that allowance. Each upload is limited to <strong>1,000 files / 50 MiB</strong>. Pagey also applies request and upload rate limits. Hosted sites are static: no Node.js, PHP, or server-side code. Use Pagey’s hosted form backend for contact forms.</p>
       </section>
     </main>`,
-    `<footer class="footer">This server is an independent open-source connector for <a href="https://pagey.site" rel="noreferrer">Pagey</a>. Pagey is operated separately and sets its own terms, limits, and content policies. <a href="/privacy">Privacy</a> · <a href="${escapeHtml(input.repoUrl)}" rel="noreferrer">GitHub</a></footer>`,
+    `<footer class="footer">This server is an independent open-source connector for <a href="https://pagey.site" rel="noreferrer">Pagey</a>. Pagey is operated separately and sets its own terms, limits, and content policies. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a> · <a href="${escapeHtml(input.repoUrl)}" rel="noreferrer">GitHub</a></footer>`,
+  );
+}
+
+export function renderTermsPage(input: { repoUrl: string }): string {
+  return layout(
+    "Terms — Pagey for ChatGPT",
+    `<main class="card">
+      <div class="eyebrow"><span class="dot"></span> Terms</div>
+      <h1>Terms</h1>
+      <p class="lead">Pagey for ChatGPT is open-source software. It is provided as-is, under the MIT License, without warranty.</p>
+      <h2>Your responsibility</h2>
+      <p>You are responsible for the content you publish and for the Pagey API token you connect. Only publish content you own or have the right to publish. Do not use the connector for malware, phishing, spam, harassment, or other unlawful content.</p>
+      <h2>Pagey’s terms</h2>
+      <p>The connector uploads content to Pagey. Pagey operates the hosting service and sets its own terms, usage limits, content policies, and takedown process. Nothing in this connector changes those terms. Read <a href="https://pagey.site/terms" rel="noreferrer">Pagey’s terms</a> and <a href="https://pagey.site/privacy" rel="noreferrer">privacy policy</a>.</p>
+      <h2>Availability</h2>
+      <p>This is a community integration. The hosted endpoint and the self-hosted software may change or be unavailable without notice. Pagey’s API limits and allowances apply.</p>
+      <h2>Source and license</h2>
+      <p>The source is available at <a href="${escapeHtml(input.repoUrl)}" rel="noreferrer">${escapeHtml(input.repoUrl)}</a> under the MIT License. The software is provided “as is”, without warranty of any kind.</p>
+    </main>`,
+    `<footer class="footer"><a href="/">Home</a> · <a href="/privacy">Privacy</a> · <a href="https://pagey.site/terms" rel="noreferrer">Pagey terms</a></footer>`,
   );
 }
 
@@ -290,6 +310,6 @@ export function renderPrivacyPage(input: { repoUrl: string }): string {
       <h2>Contact</h2>
       <p>This is an independent open-source project. Report privacy concerns or request deletion through the repository: <a href="${escapeHtml(input.repoUrl)}" rel="noreferrer">${escapeHtml(input.repoUrl)}</a>.</p>
     </main>`,
-    `<footer class="footer"><a href="/">Home</a> · <a href="https://pagey.site/privacy" rel="noreferrer">Pagey privacy policy</a></footer>`,
+    `<footer class="footer"><a href="/">Home</a> · <a href="/terms">Terms</a> · <a href="https://pagey.site/privacy" rel="noreferrer">Pagey privacy policy</a></footer>`,
   );
 }

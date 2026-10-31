@@ -102,13 +102,17 @@ try {
 
   console.log(`\nDeployment verified: ${baseUrl}/mcp`);
 } finally {
-  if (formId) {
-    const response = await fetch(`https://pagey.site/api/forms/${formId}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (response.ok || response.status === 204) console.log("✓ Deleted the smoke-test form");
-    else console.warn(`Could not delete smoke-test form ${formId} (HTTP ${response.status})`);
+  try {
+    if (formId) {
+      const response = await fetch(`https://pagey.site/api/forms/${formId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok || response.status === 204) console.log("✓ Deleted the smoke-test form");
+      else console.warn(`Could not delete smoke-test form ${formId} (HTTP ${response.status})`);
+    }
+  } catch {
+    console.warn(`Could not delete smoke-test form ${formId ?? ""}`.trim());
   }
   await client.close().catch(() => undefined);
 }

@@ -8,7 +8,7 @@ import { createPageyMcpServer } from "../mcp/server.js";
 import type { Logger } from "../util/logger.js";
 import { RateLimiter } from "../util/rate-limit.js";
 import { VERSION } from "../version.js";
-import { renderLandingPage, renderMessagePage, renderPrivacyPage } from "./pages.js";
+import { renderLandingPage, renderMessagePage, renderPrivacyPage, renderTermsPage } from "./pages.js";
 
 const CSP =
   "default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'";
@@ -59,6 +59,12 @@ export function createApp(config: Config, store: Store, log: Logger): Express {
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("Cache-Control", "public, max-age=300");
     res.send(renderPrivacyPage({ repoUrl: config.repoUrl }));
+  });
+
+  app.get("/terms", (_req, res) => {
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=300");
+    res.send(renderTermsPage({ repoUrl: config.repoUrl }));
   });
 
   app.get("/robots.txt", (_req, res) => {
@@ -165,15 +171,17 @@ export function createApp(config: Config, store: Store, log: Logger): Express {
       return;
     }
     const type = isRecord(error) && typeof error["type"] === "string" ? error["type"] : "";
+    if (type === "entity.too.large") {
+      if (req.path === "/mcp") res.status(413).json(rpcError(-32000, "Request body is too large"));
+      else res.status(413).json({ error: "Request body is too large" });
+      return;
+    }
+    if (error instanceof SyntaxError || type === "entity.parse.failed") {
+      if (req.path === "/mcp") res.status(400).json(rpcError(-32700, "Parse error"));
+      else res.status(400).json({ error: "Invalid request body" });
+      return;
+    }
     if (req.path === "/mcp") {
-      if (type === "entity.too.large") {
-        res.status(413).json(rpcError(-32000, "Request body is too large"));
-        return;
-      }
-      if (error instanceof SyntaxError) {
-        res.status(400).json(rpcError(-32700, "Parse error"));
-        return;
-      }
       log.error("MCP request failed", { error: error instanceof Error ? error.name : "unknown" });
       res.status(500).json(rpcError(-32603, "Internal server error"));
       return;

@@ -39,7 +39,7 @@ function shutdown(signal: string): void {
   const force = setTimeout(() => {
     log.warn("Forcing shutdown");
     process.exit(1);
-  }, 10_000);
+  }, 20_000);
   force.unref();
   server.close(() => {
     store.close();

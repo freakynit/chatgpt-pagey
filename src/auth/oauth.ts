@@ -111,7 +111,7 @@ class PageyOAuthProvider implements OAuthServerProvider {
   }
 
   async authorize(client: OAuthClientInformationFull, params: AuthorizationParams, res: Response): Promise<void> {
-    const requestedScopes = (params.scopes ?? []).filter(Boolean);
+    const requestedScopes = (params.scopes ?? []).map((scope) => scope.trim()).filter(Boolean);
     const req = res.req;
     if (req.method === "GET") {
       this.renderForm(client, params, req, res);
@@ -483,7 +483,12 @@ function parseCookies(header: string | undefined): Record<string, string> {
     if (index === -1) continue;
     const name = part.slice(0, index).trim();
     const value = part.slice(index + 1).trim();
-    if (name) cookies[name] = decodeURIComponent(value);
+    if (!name) continue;
+    try {
+      cookies[name] = decodeURIComponent(value);
+    } catch {
+      cookies[name] = value;
+    }
   }
   return cookies;
 }

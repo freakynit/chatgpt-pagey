@@ -169,13 +169,17 @@ try {
   await client.close();
   console.log(`\nDemo URL: ${siteUrl}`);
 } finally {
-  if (formId) {
-    const response = await fetch(`https://pagey.site/api/forms/${formId}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (response.ok || response.status === 204) console.log("✓ Deleted the test form");
-    else console.warn(`Could not delete test form ${formId} (HTTP ${response.status})`);
+  try {
+    if (formId) {
+      const response = await fetch(`https://pagey.site/api/forms/${formId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok || response.status === 204) console.log("✓ Deleted the test form");
+      else console.warn(`Could not delete test form ${formId} (HTTP ${response.status})`);
+    }
+  } catch {
+    console.warn(`Could not delete test form ${formId ?? ""}`.trim());
   }
   server.close();
   await once(server, "close");

@@ -230,6 +230,18 @@ That script walks the real OAuth flow, publishes the demo page, updates it at th
 same URL, exercises analytics and forms, and leaves the demo site online. The
 current demo is [chatgpt-demo.pagey.site](https://chatgpt-demo.pagey.site).
 
+To check a deployed endpoint without creating a site:
+
+```sh
+MCP_BASE_URL=https://mcp.example.com \
+PAGEY_API_TOKEN=... \
+E2E_SUBDOMAIN=my-demo-site \
+npm run smoke:remote
+```
+
+`npm run smoke` is a local stdio check of the server and Pagey token; it does not
+create or change a site.
+
 ### Local development with ChatGPT
 
 ChatGPT cannot reach `127.0.0.1`. For a local test, expose the server through an
