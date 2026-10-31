@@ -34,6 +34,9 @@ No subscription. No credit card. No cap on the number of sites you own.
 | :---: | :---: | :---: |
 | ChatGPT writes the site in the conversation | One tool call uploads it to Pagey | A real `https://…pagey.site` link |
 
+**Use it now:** add `https://mcp.pagey.site/mcp` in ChatGPT → **Plugins** →
+**Add custom MCP server**, choose **OAuth**, and connect your Pagey account.
+
 </div>
 
 ## Why this one is different
@@ -77,12 +80,40 @@ images, fonts, and other static assets.
 
 ## Connect it
 
-ChatGPT needs a public HTTPS endpoint. **This repository is that endpoint.**
-Deploy it once, then connect ChatGPT to your deployment.
+The public deployment is live. There is nothing to install:
 
-### 1. Deploy the server
+```text
+https://mcp.pagey.site/mcp
+```
 
-The fastest path is Docker Compose with automatic HTTPS via Caddy:
+1. Open ChatGPT → **Plugins** → **Add custom MCP server**.
+2. Name it **Pagey**.
+3. Server URL: `https://mcp.pagey.site/mcp`.
+4. Authentication: **OAuth**.
+5. Create the plugin. ChatGPT discovers the OAuth metadata automatically.
+6. The first time ChatGPT uses a Pagey tool, it opens the Pagey connection page.
+   Create a free account at [pagey.site/signup](https://pagey.site/signup) if you
+   need one, then paste a token from
+   [pagey.site/dashboard/api-tokens](https://pagey.site/dashboard/api-tokens).
+   Label it **ChatGPT**.
+
+No Pagey password is ever requested. The token is stored encrypted, sent only to
+Pagey’s API, and grants full access to your Pagey account — so use a dedicated
+token and revoke it when you are done.
+
+Then start a chat with the Pagey plugin enabled:
+
+```text
+Build a one-page site for my coffee subscription and publish it.
+```
+
+ChatGPT writes a complete responsive page, calls `publish_site`, and returns the
+live URL. Ask for changes and it calls `update_site` — same address, new content.
+
+### Prefer to self-host?
+
+`mcp.pagey.site` is the community deployment of this open-source server. You can
+run the same code on your own domain in a few minutes:
 
 ```sh
 git clone https://github.com/freakynit/chatgpt-pagey.git
@@ -93,41 +124,8 @@ docker compose up -d --build
 ```
 
 Open `https://mcp.example.com/healthz` — it should return `{"status":"ok"}`.
-Full instructions for Docker, Nginx, Node, systemd, backups, and updates are in
-[docs/DEPLOY.md](docs/DEPLOY.md).
-
-### 2. Add the plugin in ChatGPT
-
-1. Open ChatGPT → **Plugins** → **Add custom MCP server**.
-2. Name it **Pagey**.
-3. Server URL: `https://mcp.example.com/mcp`.
-4. Authentication: **OAuth**.
-5. Create the plugin. ChatGPT discovers the OAuth metadata automatically.
-
-### 3. Connect your Pagey account
-
-The first time ChatGPT uses a Pagey tool, it opens the Pagey connection page:
-
-1. Create a free account at [pagey.site/signup](https://pagey.site/signup) if you
-   do not have one.
-2. Open [API tokens](https://pagey.site/dashboard/api-tokens) and create a token
-   labeled **ChatGPT**.
-3. Paste the token on the connection page. It is stored encrypted and sent only
-   to Pagey’s API.
-
-No Pagey password is ever requested. The token grants full access to your Pagey
-account, so use a dedicated token and revoke it when you are done.
-
-### 4. Publish
-
-Start a chat with the Pagey plugin enabled:
-
-```text
-Build a one-page site for my coffee subscription and publish it.
-```
-
-ChatGPT writes a complete responsive page, calls `publish_site`, and returns the
-live URL. Ask for changes and it calls `update_site` — same address, new content.
+Full instructions for Docker, Nginx, Node, systemd, backups, updates, and
+verification are in [docs/DEPLOY.md](docs/DEPLOY.md).
 
 ## What the plugin can do
 

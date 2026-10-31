@@ -1,5 +1,8 @@
 # Deploy the Pagey MCP server
 
+The public deployment is **`https://mcp.pagey.site/mcp`**. This guide is for
+running your own copy.
+
 ChatGPT connects to a remote MCP server over public HTTPS. This repository is
 that server: one Node.js process with the OAuth flow, the Pagey API client, and
 a small SQLite database for encrypted account connections.
@@ -175,6 +178,21 @@ reconnect, but does not affect their sites.
 There is no automatic deletion of Pagey tokens. Revoke the dedicated Pagey token
 in the Pagey dashboard when a connection is no longer needed.
 
+## Verify a deployment
+
+From a checkout, walk the real OAuth and MCP flow against the public endpoint:
+
+```sh
+MCP_BASE_URL=https://mcp.example.com \
+PAGEY_API_TOKEN=... \
+E2E_SUBDOMAIN=my-demo-site \
+npm run smoke:remote
+```
+
+The script updates the existing demo site (it does not create one unless
+`SMOKE_CREATE=1`), verifies the live HTML, exercises analytics, and creates and
+deletes a test form. It prints no tokens.
+
 ## Updating
 
 ```sh
@@ -183,7 +201,8 @@ docker compose up -d --build
 ```
 
 The `pagey-data` volume survives rebuilds. Run `npm test` and `npm run typecheck`
-before deploying a fork.
+before deploying a fork. Updating the server version does not touch the Pagey
+sites it published.
 
 ## Troubleshooting
 
