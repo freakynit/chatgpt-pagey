@@ -1,0 +1,14 @@
+node_modules
+dist
+data
+.git
+.github
+.env
+.env.*
+*.log
+.DS_Store
+test
+scripts
+examples
+docs
+README.md

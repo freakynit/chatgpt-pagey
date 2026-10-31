@@ -1,0 +1,44 @@
+services:
+  pagey-mcp:
+    build: .
+    restart: unless-stopped
+    environment:
+      PUBLIC_BASE_URL: https://${MCP_DOMAIN}
+      TRUST_PROXY: "1"
+      DATA_DIR: /data
+      HOST: 0.0.0.0
+      PORT: "8787"
+    env_file:
+      - .env
+    volumes:
+      - pagey-data:/data
+    expose:
+      - "8787"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8787/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      pagey-mcp:
+        condition: service_healthy
+    environment:
+      MCP_DOMAIN: ${MCP_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  pagey-data:
+  caddy-data:
+  caddy-config:

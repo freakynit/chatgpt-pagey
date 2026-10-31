@@ -1,0 +1,140 @@
+# Kubernetes manifests used for the public mcp.pagey.site deployment.
+# Adjust the image tag, hostname, and TLS secret for your own cluster.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: chatgpt-pagey-data
+  namespace: apps
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatgpt-pagey
+  namespace: apps
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: chatgpt-pagey
+  template:
+    metadata:
+      labels:
+        app: chatgpt-pagey
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: ghcr
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: chatgpt-pagey
+          image: ghcr.io/freakynit/chatgpt-pagey:v1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8787
+          env:
+            - name: PUBLIC_BASE_URL
+              value: https://mcp.pagey.site
+            - name: TRUST_PROXY
+              value: "1"
+            - name: DATA_DIR
+              value: /data
+            - name: NODE_ENV
+              value: production
+            - name: LOG_LEVEL
+              value: info
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: "500m"
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: chatgpt-pagey-data
+        - name: tmp
+          emptyDir:
+            sizeLimit: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chatgpt-pagey
+  namespace: apps
+spec:
+  selector:
+    app: chatgpt-pagey
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chatgpt-pagey
+  namespace: apps
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    # The existing *.pagey.site wildcard ingress must not swallow this host.
+    traefik.ingress.kubernetes.io/router.priority: "1000"
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: mcp.pagey.site
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: chatgpt-pagey
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - mcp.pagey.site
+      secretName: pagey-wildcard-tls

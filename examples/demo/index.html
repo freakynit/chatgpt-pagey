@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Pagey for ChatGPT turns a conversation into a live static website. Free hosting, no credit card, no cap on total sites.">
+  <meta name="theme-color" content="#d6fa73">
+  <title>Pagey for ChatGPT — a website from a conversation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #141a10;
+      --muted: #5b6454;
+      --paper: #fbfbf4;
+      --card: #ffffff;
+      --line: #e2e3d8;
+      --lime: #d6fa73;
+      --lime-strong: #c4ef4f;
+      --soft: #f0ffdb;
+      --shadow: 0 24px 70px rgba(20, 26, 16, 0.1);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(1000px 560px at 82% -12%, rgba(214, 250, 115, 0.55), transparent 68%),
+        linear-gradient(180deg, #fbfbf4 0%, #f7f8f2 100%);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    .wrap { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+    .nav {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px;
+      padding: 24px 0;
+    }
+    .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; letter-spacing: -0.02em; }
+    .mark {
+      display: grid; place-items: center; width: 32px; height: 32px; border-radius: 10px;
+      background: var(--ink); color: var(--lime); font-weight: 900; font-size: 18px;
+      box-shadow: 0 4px 0 rgba(20, 26, 16, 0.18);
+    }
+    .nav-links { display: flex; align-items: center; gap: 18px; font-size: 14px; color: var(--muted); }
+    .nav-links a { text-decoration: none; }
+    .nav-links a:hover { color: var(--ink); }
+    .hero { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(28px, 5vw, 64px); align-items: center; padding: 48px 0 36px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px;
+      padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px;
+      background: rgba(214, 250, 115, 0.35); font-size: 12px; font-weight: 800;
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #4d7c0f; box-shadow: 0 0 0 3px rgba(214, 250, 115, 0.75); }
+    h1 { margin: 0 0 18px; font-size: clamp(42px, 6vw, 78px); line-height: 0.98; letter-spacing: -0.055em; }
+    h1 em { font-style: normal; background: linear-gradient(180deg, transparent 62%, var(--lime) 62%); padding: 0 4px; }
+    .lead { margin: 0 0 26px; color: var(--muted); font-size: clamp(17px, 2vw, 20px); max-width: 56ch; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      min-height: 50px; padding: 0 21px; border: 1px solid var(--ink); border-radius: 12px;
+      background: var(--lime); color: var(--ink); font-weight: 800; text-decoration: none;
+      box-shadow: 0 6px 0 var(--ink); transform: translateY(-2px);
+    }
+    .button:hover { background: var(--lime-strong); }
+    .button:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+    .button.secondary { background: var(--card); box-shadow: 0 6px 0 var(--line); border-color: var(--line); }
+    .button.secondary:hover { background: #f7f8f4; }
+    .micro { color: var(--muted); font-size: 13px; margin: 16px 0 0; }
+    .chat {
+      position: relative; border: 1px solid var(--line); border-radius: 22px; background: var(--card);
+      box-shadow: var(--shadow); overflow: hidden;
+    }
+    .chat-top {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 13px 16px; border-bottom: 1px solid var(--line); background: #f7f8f2;
+      font-size: 12px; color: var(--muted);
+    }
+    .window-dots { display: flex; gap: 6px; }
+    .window-dots span { width: 9px; height: 9px; border-radius: 50%; background: #d6d9cf; }
+    .window-dots span:first-child { background: var(--lime); }
+    .chat-body { padding: 18px; display: grid; gap: 14px; }
+    .bubble { border-radius: 14px; padding: 13px 15px; font-size: 14px; line-height: 1.5; }
+    .bubble.user { justify-self: end; max-width: 88%; background: var(--lime); color: var(--ink); border-bottom-right-radius: 5px; }
+    .bubble.bot { max-width: 92%; background: #f7f8f2; border: 1px solid var(--line); border-bottom-left-radius: 5px; }
+    .site-card { margin-top: 12px; border: 1px solid var(--line); border-radius: 13px; overflow: hidden; background: var(--card); }
+    .site-preview {
+      height: 108px; background:
+        linear-gradient(135deg, rgba(214, 250, 115, 0.95), rgba(214, 250, 115, 0.35)),
+        repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(20, 26, 16, 0.06) 15px, rgba(20, 26, 16, 0.06) 16px);
+      display: flex; align-items: flex-end; padding: 14px;
+    }
+    .site-preview strong { font-size: 18px; letter-spacing: -0.03em; }
+    .site-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 13px; font-size: 12px; }
+    .site-meta code { color: var(--muted); }
+    .live { display: inline-flex; align-items: center; gap: 6px; font-weight: 800; color: #3f6212; }
+    .live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #65a30d; }
+    .trust { display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 18px 0 8px; color: var(--muted); font-size: 13px; }
+    .trust span { display: inline-flex; align-items: center; gap: 7px; }
+    .check { display: grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; background: var(--lime); color: var(--ink); font-size: 11px; font-weight: 900; }
+    section { padding: 54px 0; }
+    .section-head { max-width: 700px; margin-bottom: 24px; }
+    h2 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 42px); line-height: 1.05; letter-spacing: -0.045em; }
+    .section-head p { margin: 0; color: var(--muted); font-size: 17px; }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .step { border: 1px solid var(--line); border-radius: 18px; padding: 22px; background: var(--card); }
+    .step-num {
+      display: grid; place-items: center; width: 30px; height: 30px; margin-bottom: 14px;
+      border-radius: 9px; background: var(--ink); color: var(--lime); font-weight: 900; font-size: 14px;
+    }
+    .step strong { display: block; margin-bottom: 5px; font-size: 16px; }
+    .step span { color: var(--muted); font-size: 14px; }
+    .features { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .feature { border: 1px solid var(--line); border-radius: 16px; padding: 20px; background: var(--card); }
+    .feature .icon { font-size: 21px; margin-bottom: 10px; }
+    .feature strong { display: block; font-size: 15px; margin-bottom: 4px; }
+    .feature span { color: var(--muted); font-size: 13.5px; }
+    .prompts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .prompt {
+      border: 1px solid #2a3324; border-radius: 14px; padding: 16px 17px;
+      background: var(--ink); color: #f4f6ec; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px; line-height: 1.55;
+    }
+    .prompt span { color: var(--lime); }
+    .limits { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 22px; align-items: start; }
+    .limit-card { border: 1px solid var(--line); border-radius: 18px; background: var(--card); padding: 24px; }
+    .limit-card h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.02em; }
+    .limit-card p { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+    .limit-card p:last-child { margin-bottom: 0; }
+    .stat { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+    .stat strong { font-size: 30px; letter-spacing: -0.04em; }
+    .stat span { color: var(--muted); font-size: 13px; }
+    .cta {
+      border: 1px solid var(--ink); border-radius: 22px; padding: clamp(26px, 5vw, 44px);
+      background: var(--lime); box-shadow: 0 10px 0 var(--ink); margin-bottom: 30px;
+    }
+    .cta h2 { max-width: 760px; }
+    .cta p { color: #33421f; max-width: 650px; }
+    .cta .button { background: var(--ink); color: var(--lime); border-color: var(--ink); box-shadow: 0 6px 0 rgba(20, 26, 16, 0.35); }
+    .cta .button:hover { background: #27301d; }
+    footer { padding: 30px 0 46px; color: var(--muted); font-size: 13px; }
+    .footer-row { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 22px; }
+    .footer-row a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+    .footer-row a:hover { border-color: var(--ink); }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; padding-top: 30px; }
+      .chat { max-width: 620px; }
+      .steps, .features { grid-template-columns: 1fr 1fr; }
+      .limits, .prompts { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 580px) {
+      .wrap { width: calc(100% - 28px); }
+      .nav-links .hide-sm { display: none; }
+      .steps, .features { grid-template-columns: 1fr; }
+      .hero { padding-bottom: 18px; }
+      section { padding: 38px 0; }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav">
+      <a class="brand" href="#top"><span class="mark">P</span><span>Pagey <span style="color: var(--muted); font-weight: 600;">for ChatGPT</span></span></a>
+      <div class="nav-links">
+        <a class="hide-sm" href="#how">How it works</a>
+        <a class="hide-sm" href="#free">Free hosting</a>
+        <a href="https://github.com/freakynit/chatgpt-pagey">GitHub ↗</a>
+      </div>
+    </nav>
+
+    <main id="top">
+      <section class="hero" style="padding-top: 30px;">
+        <div>
+          <div class="eyebrow"><span class="dot"></span> Published from a conversation</div>
+          <h1>ChatGPT writes it.<br><em>Pagey hosts it.</em></h1>
+          <p class="lead">Ask for a website. Get a real one. Pagey publishes static sites straight from ChatGPT to a live HTTPS address — free, with no credit card and no cap on total sites.</p>
+          <div class="actions">
+            <a class="button" href="https://github.com/freakynit/chatgpt-pagey#connect">Add to ChatGPT <span aria-hidden="true">→</span></a>
+            <a class="button secondary" href="https://pagey.site">Explore Pagey</a>
+          </div>
+          <p class="micro">Works with ChatGPT’s custom MCP plugins. Your Pagey account connects in about a minute.</p>
+        </div>
+
+        <div class="chat" aria-label="Example ChatGPT conversation">
+          <div class="chat-top">
+            <div class="window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <span>ChatGPT · Pagey plugin</span>
+            <span aria-hidden="true">•••</span>
+          </div>
+          <div class="chat-body">
+            <div class="bubble user">Build a launch page for my indie analytics tool and publish it.</div>
+            <div class="bubble bot">
+              Done — I designed a one-page site with a hero, feature grid, pricing, and FAQ.
+              <div class="site-card">
+                <div class="site-preview"><strong>Meet Pulse.<br>Analytics without the noise.</strong></div>
+                <div class="site-meta">
+                  <code>quiet-orbit.pagey.site</code>
+                  <span class="live">Live</span>
+                </div>
+              </div>
+            </div>
+            <div class="bubble user">Make the headline shorter and update the same link.</div>
+            <div class="bubble bot">Updated. The URL is unchanged: <strong>quiet-orbit.pagey.site</strong> ✓</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="trust">
+        <span><i class="check">✓</i> No subscription</span>
+        <span><i class="check">✓</i> No credit card</span>
+        <span><i class="check">✓</i> No cap on total sites</span>
+        <span><i class="check">✓</i> Automatic HTTPS</span>
+        <span><i class="check">✓</i> Same URL on updates</span>
+      </div>
+
+      <section id="how">
+        <div class="section-head">
+          <h2>From prompt to published in three steps.</h2>
+          <p>No build pipeline, cloud project, or deploy button. The conversation is the workflow.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><strong>Ask for the site</strong><span>ChatGPT writes a complete, responsive HTML page right in the chat.</span></div>
+          <div class="step"><div class="step-num">2</div><strong>Publish to Pagey</strong><span>The plugin uploads it and returns a real <code>*.pagey.site</code> link.</span></div>
+          <div class="step"><div class="step-num">3</div><strong>Iterate at the same URL</strong><span>Ask for changes. The site is replaced in place; the link stays put.</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>A tiny hosting toolkit, included.</h2>
+          <p>Everything a static site needs — and a few things you would normally wire up separately.</p>
+        </div>
+        <div class="features">
+          <div class="feature"><div class="icon">⚡</div><strong>Instant publishing</strong><span>Single HTML file or a multi-file site with CSS, JS, images, and fonts.</span></div>
+          <div class="feature"><div class="icon">🔒</div><strong>Password-protected drafts</strong><span>Share a private preview without building an auth system.</span></div>
+          <div class="feature"><div class="icon">📊</div><strong>Visitor analytics</strong><span>Views, visitors, top pages, referrers, countries, and devices.</span></div>
+          <div class="feature"><div class="icon">✉️</div><strong>Hosted forms</strong><span>Contact and waitlist forms with a real backend and stored responses.</span></div>
+          <div class="feature"><div class="icon">🌍</div><strong>Country rules</strong><span>Allow or block visitors by country, right from the conversation.</span></div>
+          <div class="feature"><div class="icon">🛠️</div><strong>Maintenance mode</strong><span>Pause a site without taking the URL down.</span></div>
+          <div class="feature"><div class="icon">🔗</div><strong>Custom subdomains</strong><span>Pick a memorable address like <code>your-project.pagey.site</code>.</span></div>
+          <div class="feature"><div class="icon">🗑️</div><strong>One-way delete</strong><span>Remove a site when you are done, with an explicit confirmation.</span></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Try asking for one of these.</h2>
+          <p>Use the Pagey plugin in ChatGPT, then paste one of these prompts.</p>
+        </div>
+        <div class="prompts">
+          <div class="prompt"><span>›</span> Build a dark, one-page portfolio for a product designer. Publish it as <span>design-by-sam</span>.</div>
+          <div class="prompt"><span>›</span> Turn this README into a clean documentation site and publish it.</div>
+          <div class="prompt"><span>›</span> Create a waitlist page with a real form, then show me the responses.</div>
+          <div class="prompt"><span>›</span> Update the pricing section on my site. Keep the same link.</div>
+        </div>
+      </section>
+
+      <section id="free">
+        <div class="section-head">
+          <h2>Free, with honest limits.</h2>
+          <p>“Unlimited” means no cap on total sites — not unlimited bandwidth or infinite new sites per day.</p>
+        </div>
+        <div class="limits">
+          <div class="limit-card">
+            <div class="stat"><strong>25</strong><span>new sites per UTC day, per registered account</span></div>
+            <div class="stat"><strong>∞</strong><span>total sites you can keep</span></div>
+            <div class="stat"><strong>90</strong><span>days of visitor analytics retention</span></div>
+            <p>Updating an existing site does not use the daily new-site allowance. Each upload can contain up to <strong>1,000 files / 50 MiB</strong>. Pagey also applies its own request and upload rate limits.</p>
+          </div>
+          <div class="limit-card">
+            <h3>What Pagey does not run</h3>
+            <p>Hosted sites are static: HTML, CSS, JavaScript, images, fonts, and other public assets. There is no Node.js, PHP, SSR, or custom API server.</p>
+            <p>Need a form backend? Use Pagey’s hosted forms — create one from ChatGPT, embed the iframe, and read the responses later.</p>
+            <p><a href="https://pagey.site/llms.txt">Read the current allowances ↗</a></p>
+          </div>
+        </div>
+      </section>
+
+      <section style="padding-top: 0;">
+        <div class="cta">
+          <h2>Build something. Publish it before you lose the thought.</h2>
+          <p>Pagey is free for registered accounts. The plugin is open source. The only thing between a conversation and a live URL is one connection.</p>
+          <div class="actions">
+            <a class="button" href="https://github.com/freakynit/chatgpt-pagey#connect">Connect Pagey to ChatGPT</a>
+            <a class="button secondary" href="https://pagey.site/signup">Create a free Pagey account</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-row">
+        <span>This demo page was published from a ChatGPT conversation with the Pagey plugin.</span>
+        <span><a href="https://pagey.site">Pagey</a> · <a href="https://github.com/freakynit/chatgpt-pagey">Source</a> · <a href="https://pagey.site/api-docs">API</a></span>
+      </div>
+      <div class="footer-row" style="border-top: 0; padding-top: 12px;">
+        <span>Independent community integration. Pagey operates the hosting service and sets its terms and limits.</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

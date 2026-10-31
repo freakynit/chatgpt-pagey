@@ -1,0 +1,4 @@
+{$MCP_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy pagey-mcp:8787
+}
