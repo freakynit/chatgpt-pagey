@@ -66,6 +66,8 @@ server {
 
   # ... your TLS certificate configuration ...
 
+  client_max_body_size 80m;
+
   location / {
     proxy_pass http://127.0.0.1:8787;
     proxy_set_header Host $host;
