@@ -80,6 +80,10 @@ Preserve the `Host` header. The server validates it against `PUBLIC_BASE_URL` to
 block DNS-rebinding requests (the `/healthz` endpoint is exempt so that
 orchestrator probes using a pod IP still work).
 
+If you put the MCP server on a Pagey subdomain, add that slug (for example
+`mcp`) to Pagey's reserved-subdomain list. Otherwise a customer could claim the
+same subdomain and find it shadowed by the MCP server's ingress.
+
 ## Option C: Node directly
 
 ```sh
