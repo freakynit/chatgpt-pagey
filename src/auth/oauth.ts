@@ -7,7 +7,6 @@ import {
   InvalidClientMetadataError,
   InvalidGrantError,
   InvalidRequestError,
-  InvalidScopeError,
   InvalidTokenError,
 } from "@modelcontextprotocol/sdk/server/auth/errors.js";
 import type { OAuthRegisteredClientsStore } from "@modelcontextprotocol/sdk/server/auth/clients.js";
@@ -113,9 +112,6 @@ class PageyOAuthProvider implements OAuthServerProvider {
 
   async authorize(client: OAuthClientInformationFull, params: AuthorizationParams, res: Response): Promise<void> {
     const requestedScopes = (params.scopes ?? []).filter(Boolean);
-    if (requestedScopes.some((scope) => scope !== PAGEY_SCOPE)) {
-      throw new InvalidScopeError(`Only the ${PAGEY_SCOPE} scope is supported`);
-    }
     const req = res.req;
     if (req.method === "GET") {
       this.renderForm(client, params, req, res);
