@@ -1,4 +1,5 @@
 import type { Config } from "../config.js";
+import { VERSION } from "../version.js";
 import type {
   Analytics,
   CreateSiteInput,
@@ -189,7 +190,7 @@ export class PageyClient {
     const headers = new Headers(init.headers);
     headers.set("Authorization", `Bearer ${this.token}`);
     headers.set("Accept", "application/json");
-    headers.set("User-Agent", "chatgpt-pagey/1.0.0");
+    headers.set("User-Agent", `chatgpt-pagey/${VERSION}`);
 
     let response: Response;
     try {

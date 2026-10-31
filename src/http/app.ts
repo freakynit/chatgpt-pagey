@@ -7,6 +7,7 @@ import { createPageyClient, decryptPageyToken, installOAuth } from "../auth/oaut
 import { createPageyMcpServer } from "../mcp/server.js";
 import type { Logger } from "../util/logger.js";
 import { RateLimiter } from "../util/rate-limit.js";
+import { VERSION } from "../version.js";
 import { renderLandingPage, renderMessagePage, renderPrivacyPage } from "./pages.js";
 
 const CSP =
@@ -21,7 +22,7 @@ export function createApp(config: Config, store: Store, log: Logger): Express {
   // before host validation.
   app.get("/healthz", (_req, res) => {
     res.setHeader("Cache-Control", "no-store");
-    res.json({ status: "ok", service: "pagey-chatgpt", version: "1.0.0" });
+    res.json({ status: "ok", service: "pagey-chatgpt", version: VERSION });
   });
 
   const allowedHosts = [...new Set([config.publicBaseUrl.hostname, "localhost", "127.0.0.1", "[::1]"])];

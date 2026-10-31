@@ -42,7 +42,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: chatgpt-pagey
-          image: ghcr.io/freakynit/chatgpt-pagey:v1.0.1
+          image: ghcr.io/freakynit/chatgpt-pagey:v1.0.2
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
